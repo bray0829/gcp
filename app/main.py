@@ -59,11 +59,15 @@ def verify_google_token(token):
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
-    token = data.get("credential")
+    print("DATA:", data)
+
+    token = data.get("credential") if data else None
+    print("TOKEN:", token[:30] if token else None)
 
     user_info = verify_google_token(token)
 
     if user_info:
+        print("LOGIN OK:", user_info.get("email"))
         session["user"] = {
             "name": user_info.get("name"),
             "email": user_info.get("email"),
@@ -71,6 +75,7 @@ def login():
         }
         return {"status": "success"}
     else:
+        print("LOGIN FALLÓ")
         return {"status": "unauthorized"}, 401
 
 
